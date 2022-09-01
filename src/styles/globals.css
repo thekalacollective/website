@@ -1,3 +1,232 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-ExtraBold.ttf') format('ttf');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-SemiBold.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-Light.ttf') format('ttf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta-ExtraLight.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-Light.ttf') format('ttf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-SemiBold.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-ExtraLight.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-ExtraBold.ttf') format('ttf');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Mahee';
+  src: url('/fonts/Mukta/MuktaMahee-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-ExtraLight.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-Light.ttf') format('ttf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-ExtraBold.ttf') format('ttf');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Malar';
+  src: url('/fonts/Mukta/MuktaMalar-SemiBold.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-ExtraBold.ttf') format('ttf');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-SemiBold.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-Light.ttf') format('ttf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-ExtraLight.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mukta Vaani';
+  src: url('/fonts/Mukta/MuktaVaani-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body {
+  font-family: 'Mukta', 'Mukta Malar', 'Mukta Mahee', 'Mukta Vaani', sans-serif;
+}
