@@ -2,16 +2,18 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-    provider = "sqlite"
+    provider             = "mysql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading: 
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    url                  = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
 }
 
 model Example {
@@ -25,12 +27,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -53,6 +55,93 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    role          Role      @default(MEMBER)
+    member        Member?
+}
+
+enum Role {
+    MEMBER
+    ADMIN
+}
+
+model Member {
+    id                    String                 @id @unique
+    user                  User                   @relation(fields: [id], references: [id])
+    username              String                 @unique
+    fullName              String
+    dateOfBirth           DateTime               @db.Date
+    profilePicture        Json?
+    city                  String
+    state                 String
+    links                 String
+    tags                  Tag[]
+    phoneNumber           String
+    yearsOfExperience     Int
+    bio                   String
+    travelPreference      TravelPreference
+    services              Service[]
+    createdAt             DateTime               @default(now())
+    updatedAt             DateTime               @updatedAt
+    membershipApplication MembershipApplication?
+    responses             SurveyResponse[]
+    albums                Album[]
+    isFeatured            Boolean
+}
+
+enum TravelPreference {
+    BASE
+    REGION
+    COUNTRY
+}
+
+model Tag {
+    id      String   @id @default(cuid())
+    name    String
+    slug    String
+    members Member[]
+}
+
+model Service {
+    id      String   @id @default(cuid())
+    name    String
+    slug    String
+    members Member[]
+}
+
+model MembershipApplication {
+    memberId  String            @id @unique
+    member    Member            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    survey    String
+    createdAt DateTime          @default(now())
+    status    ApplicationStatus @default(PENDING)
+    note      String
+}
+
+model Survey {
+    id        String           @id @default(cuid())
+    title     String
+    slug      String           @unique
+    schema    Json
+    responses SurveyResponse[]
+}
+
+model SurveyResponse {
+    memberId  String
+    member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    surveyId  String
+    survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+    answers   Json
+    createdAt DateTime @default(now())
+
+    @@id([memberId, surveyId])
+    @@unique([memberId, surveyId])
+}
+
+model Album {
+    id       String @id @default(cuid())
+    memberId String
+    member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    images   Json
 }
 
 model VerificationToken {
@@ -61,4 +150,11 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+enum ApplicationStatus {
+    APPROVED
+    REJECTED
+    BLOCKED
+    PENDING
 }
