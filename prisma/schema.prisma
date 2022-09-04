@@ -69,15 +69,16 @@ model Member {
     user                  User                   @relation(fields: [id], references: [id])
     username              String                 @unique
     fullName              String
-    dateOfBirth           DateTime               @db.Date
-    profilePicture        Json?
+    dateOfBirth           String
+    profilePicture        String?
     city                  String
     state                 String
-    links                 String
+    links                 Json
+    email                 String
     tags                  Tag[]
     phoneNumber           String
     yearsOfExperience     Int
-    bio                   String
+    about                 String
     travelPreference      TravelPreference
     services              Service[]
     createdAt             DateTime               @default(now())
@@ -85,7 +86,7 @@ model Member {
     membershipApplication MembershipApplication?
     responses             SurveyResponse[]
     albums                Album[]
-    isFeatured            Boolean
+    isFeatured            Boolean                @default(false)
 }
 
 enum TravelPreference {
@@ -96,25 +97,24 @@ enum TravelPreference {
 
 model Tag {
     id      String   @id @default(cuid())
-    name    String
-    slug    String
+    name    String   @unique
     members Member[]
 }
 
 model Service {
     id      String   @id @default(cuid())
-    name    String
-    slug    String
+    name    String   @unique
     members Member[]
 }
 
 model MembershipApplication {
-    memberId  String            @id @unique
-    member    Member            @relation(fields: [memberId], references: [id], onDelete: Cascade)
-    survey    String
-    createdAt DateTime          @default(now())
-    status    ApplicationStatus @default(PENDING)
-    note      String
+    memberId       String            @id @unique
+    member         Member            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    surveyId       String
+    surveyResponse SurveyResponse    @relation(fields: [surveyId, memberId], references: [surveyId, memberId])
+    createdAt      DateTime          @default(now())
+    status         ApplicationStatus @default(PENDING)
+    note           String?
 }
 
 model Survey {
@@ -126,12 +126,13 @@ model Survey {
 }
 
 model SurveyResponse {
-    memberId  String
-    member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
-    surveyId  String
-    survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-    answers   Json
-    createdAt DateTime @default(now())
+    memberId               String
+    member                 Member                  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    surveyId               String
+    survey                 Survey                  @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+    answers                Json
+    createdAt              DateTime                @default(now())
+    membershipApplications MembershipApplication[]
 
     @@id([memberId, surveyId])
     @@unique([memberId, surveyId])
@@ -154,7 +155,7 @@ model VerificationToken {
 
 enum ApplicationStatus {
     APPROVED
-    REJECTED
+    DECLINED
     BLOCKED
     PENDING
 }
