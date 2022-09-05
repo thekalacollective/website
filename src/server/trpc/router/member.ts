@@ -9,6 +9,13 @@ export const memberRouter = t.router({
           status: "APPROVED",
         },
       },
+      orderBy: {
+        isFeatured: "desc",
+      },
+      include: {
+        services: true,
+        tags: true,
+      },
     });
   }),
   getMember: authedProcedure.query(({ ctx }) => {
@@ -119,8 +126,29 @@ export const memberRouter = t.router({
           },
         },
         include: {
-          membershipApplication: true,
+          membershipApplication: {
+            include: {
+              surveyResponse: true,
+            },
+          },
+          services: true,
+          tags: true,
+          responses: true,
         },
       });
+    }),
+  approveMember: authedProcedure
+    .input(z.object({ memberId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      if (ctx.session.user.role === "ADMIN") {
+        return ctx.prisma.membershipApplication.update({
+          where: {
+            memberId: input.memberId,
+          },
+          data: {
+            status: "APPROVED",
+          },
+        });
+      }
     }),
 });
