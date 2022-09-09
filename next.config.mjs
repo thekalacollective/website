@@ -19,6 +19,21 @@ export default defineNextConfig({
   experimental: {
     images: {
       allowFutureImage: true,
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "f004.backblazeb2.com",
+          port: "",
+          pathname: "file/thekalacollective-website-user-media/**",
+        },
+        {
+          protocol: "https",
+          hostname: "images.unsplash.com",
+        },
+      ],
     },
+  },
+  images: {
+    domains: ["f004.backblazeb2.com", "images.unsplash.com"],
   },
 });
