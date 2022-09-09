@@ -1,6 +1,5 @@
 // src/pages/api/examples.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../server/db/client";
 import { env } from "../../env/server.mjs";
 
 type MediaUploadType = {
@@ -9,13 +8,7 @@ type MediaUploadType = {
   userId: string;
 };
 
-import {
-  S3Client,
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  GetObjectCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const S3 = new S3Client({
@@ -30,7 +23,7 @@ const S3 = new S3Client({
 const restricted = async (req: NextApiRequest, res: NextApiResponse) => {
   const { fileName, extension, userId } = req.query as MediaUploadType;
 
-  let signedUrl = await getSignedUrl(
+  const signedUrl = await getSignedUrl(
     S3,
     new PutObjectCommand({
       Bucket: env.B2_BUCKET_NAME,
