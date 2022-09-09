@@ -851,6 +851,8 @@ const AdminHome: NextPage = (props: {
 
 export default AdminHome;
 
+import { prisma } from "../../server/db/client";
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -862,7 +864,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const maxItemsPerPage = 10;
       const currentPage = 0;
       const selectedTab = "PENDING";
-      const pendingApplications = await prisma?.member.findMany({
+      const pendingApplications = await prisma.member.findMany({
         skip: currentPage * maxItemsPerPage,
         take: maxItemsPerPage,
         where: {

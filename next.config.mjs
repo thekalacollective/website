@@ -28,6 +28,7 @@ export default defineNextConfig({
         },
         {
           protocol: "https",
+          port: "",
           hostname: "images.unsplash.com",
         },
       ],

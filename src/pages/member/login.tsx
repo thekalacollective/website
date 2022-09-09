@@ -128,6 +128,8 @@ const MemberLogin: NextPage = (props: {
 
 export default MemberLogin;
 
+import { prisma } from "../../server/db/client";
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
@@ -135,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     authOptions
   );
   if (session && session.user) {
-    const member = await prisma?.member.findUnique({
+    const member = await prisma.member.findUnique({
       where: {
         id: session.user.id,
       },

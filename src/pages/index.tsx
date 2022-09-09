@@ -21,6 +21,7 @@ import clsx from "clsx";
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/future/image";
+import { prisma } from "../server/db/client";
 
 function MemberDirectory({
   members,
@@ -751,7 +752,7 @@ const Home: NextPage = (props: {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const members = await prisma?.member.findMany({
+  const members = await prisma.member.findMany({
     where: {
       membershipApplication: {
         status: "APPROVED",
@@ -771,8 +772,8 @@ export const getStaticProps: GetStaticProps = async () => {
     },
   });
 
-  const tags = await prisma?.tag.findMany();
-  const services = await prisma?.service.findMany();
+  const tags = await prisma.tag.findMany();
+  const services = await prisma.service.findMany();
 
   return {
     props: {
