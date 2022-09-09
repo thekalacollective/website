@@ -3,7 +3,7 @@
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+    previewFeatures = ["referentialIntegrity", "fullTextIndex"]
 }
 
 datasource db {
@@ -14,10 +14,6 @@ datasource db {
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url                  = env("DATABASE_URL")
     referentialIntegrity = "prisma"
-}
-
-model Example {
-    id String @id @default(cuid())
 }
 
 // Necessary for Next auth
@@ -71,8 +67,8 @@ model Member {
     fullName              String
     dateOfBirth           String
     profilePicture        String?
-    city                  String
-    state                 String
+    location              LocationCity           @relation(fields: [locationCityId], references: [id])
+    locationCityId        String
     links                 Json
     email                 String
     tags                  Tag[]
@@ -87,6 +83,8 @@ model Member {
     responses             SurveyResponse[]
     albums                Album[]
     isFeatured            Boolean                @default(false)
+
+    @@fulltext([fullName])
 }
 
 enum TravelPreference {
@@ -158,4 +156,20 @@ enum ApplicationStatus {
     DECLINED
     BLOCKED
     PENDING
+}
+
+model LocationState {
+    id     String         @id @default(cuid())
+    name   String         @unique
+    cities LocationCity[]
+}
+
+model LocationCity {
+    id      String        @id @default(cuid())
+    name    String
+    stateId String
+    state   LocationState @relation(fields: [stateId], references: [id], onDelete: Cascade)
+    members Member[]
+
+    @@unique([name, stateId])
 }
