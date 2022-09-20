@@ -16,25 +16,18 @@ function defineNextConfig(config) {
 export default defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    images: {
-      allowFutureImage: true,
-      remotePatterns: [
-        {
-          protocol: "https",
-          hostname: "f004.backblazeb2.com",
-          port: "",
-          pathname: "file/thekalacollective-website-user-media/**",
-        },
-        {
-          protocol: "https",
-          port: "",
-          hostname: "images.unsplash.com",
-        },
-      ],
-    },
-  },
   images: {
     domains: ["f004.backblazeb2.com", "images.unsplash.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "f004.backblazeb2.com",
+        pathname: "file/thekalacollective-website-user-media/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
 });
