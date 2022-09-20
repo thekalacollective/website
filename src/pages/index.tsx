@@ -64,7 +64,12 @@ function MemberDirectory({
     city: string | undefined;
   };
 
-  const { register, watch } = useForm<Filters>();
+  const { register, watch, setValue } = useForm<Filters>();
+
+  const getLocationStates = trpc.proxy.constants.getLocationStates.useQuery();
+  const getLocationCities = trpc.proxy.constants.getLocationCities.useQuery({
+    state: watch("state") ?? "",
+  });
 
   const getMembersQuery = trpc.proxy.member.getMembers.useQuery(
     {
@@ -75,11 +80,11 @@ function MemberDirectory({
       tags: watch("tags") ? watch("tags") : [],
       services: watch("services") ? watch("services") : [],
       experienceRange: {
-        start: watch("experience.start") ?? 0,
-        end: watch("experience.end"),
+        start: !watch("experience.start") ? 0 : watch("experience.start"),
+        end: !watch("experience.end") ? 0 : watch("experience.end"),
       },
-      state: watch("state"),
-      city: watch("city"),
+      state: watch("state") === "ANY" ? undefined : watch("state"),
+      city: watch("city") === "ANY" ? undefined : watch("city"),
     },
     {
       initialData: members,
@@ -169,7 +174,7 @@ function MemberDirectory({
                                   >
                                     <input
                                       id={`${section.id}-${optionIdx}-mobile`}
-                                      defaultValue={option.id}
+                                      value={option.id}
                                       type="checkbox"
                                       {...register(`${section.id}`)}
                                       className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"
@@ -259,8 +264,130 @@ function MemberDirectory({
 
             <div className="hidden lg:block">
               <form className="divide-y divide-slate-200 space-y-6">
-                <fieldset className="mt-6">
+                <fieldset className="mt-6 space-y-4">
                   <div>
+                    <legend className="block text-sm font-medium text-slate-900">
+                      Experience
+                    </legend>
+                  </div>
+                  <div className="mt-4">
+                    <label
+                      htmlFor="experience-min"
+                      className="block text-sm font-medium text-slate-600"
+                    >
+                      Minimum
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="number"
+                        id="experience-min"
+                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                        {...register("experience.start", {
+                          min: 0,
+                          max: 100,
+                          valueAsNumber: true,
+                        })}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label
+                      htmlFor="experience-max"
+                      className="block text-sm font-medium text-slate-600"
+                    >
+                      Maximum
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="number"
+                        id="experience-max"
+                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                        {...register("experience.end", {
+                          min: 0,
+                          max: 100,
+                          valueAsNumber: true,
+                        })}
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset className="mt-6 space-y-4">
+                  <div className="mt-6">
+                    <legend className="block text-sm font-medium text-slate-900">
+                      Location
+                    </legend>
+                  </div>
+                  <div className="mt-4">
+                    <label
+                      htmlFor="state"
+                      className="block text-sm font-medium text-slate-600"
+                    >
+                      State
+                    </label>
+                    <div className="mt-1">
+                      <select
+                        id="state"
+                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md capitalize"
+                        {...register("state", {
+                          required: true,
+                          onChange: () => {
+                            setValue("city", "ANY");
+                          },
+                        })}
+                      >
+                        <option value={"ANY"} className="capitalize">
+                          Select
+                        </option>
+                        {getLocationStates.data &&
+                          getLocationStates.data.length > 0 &&
+                          getLocationStates.data.map((state) => (
+                            <option
+                              value={state.id}
+                              key={state.id}
+                              className="capitalize"
+                            >
+                              {state.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="city"
+                      className="block text-sm font-medium text-slate-600"
+                    >
+                      City
+                    </label>
+                    <div className="mt-1">
+                      <select
+                        id="city"
+                        autoComplete="city"
+                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md capitalize"
+                        {...register("city", {
+                          required: true,
+                        })}
+                      >
+                        <option value={"ANY"} className="capitalize">
+                          Select
+                        </option>
+                        {getLocationCities.data &&
+                          getLocationCities.data.length > 0 &&
+                          getLocationCities.data.map((city) => (
+                            <option
+                              value={city.id}
+                              key={city.id}
+                              className="capitalize"
+                            >
+                              {city.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset className="mt-6">
+                  <div className="mt-6">
                     <legend className="block text-sm font-medium text-slate-900">
                       Travel Availability
                     </legend>
@@ -326,7 +453,7 @@ function MemberDirectory({
                             <div key={option.id} className="flex items-center">
                               <input
                                 id={`${section.id}-${optionIdx}`}
-                                defaultValue={option.id}
+                                value={option.id}
                                 type="checkbox"
                                 {...register(`${section.id}`)}
                                 className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"

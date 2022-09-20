@@ -46,7 +46,7 @@ export const memberRouter = t.router({
         city: z.string().optional(),
         travelPreference: z.array(z.enum(["BASE", "REGION", "COUNTRY"])),
         experienceRange: z
-          .object({ start: z.number(), end: z.number().optional() })
+          .object({ start: z.number().optional(), end: z.number().optional() })
           .optional(),
         sortOption: z.string().optional(),
       })
@@ -77,7 +77,10 @@ export const memberRouter = t.router({
           },
           yearsOfExperience: {
             gte: input.experienceRange?.start,
-            lte: input.experienceRange?.end,
+            lte:
+              input.experienceRange?.end === 0
+                ? undefined
+                : input.experienceRange?.end,
           },
           tags: { some: { id: { in: input.tags } } },
           services: { some: { id: { in: input.services } } },
