@@ -23,6 +23,30 @@ export const createMembershipApplicationSchema = z.object({
   }),
 });
 
+export const updateMemberSchema = z.object({
+  fullName: z.string().optional(),
+  username: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  state: z.string().optional(),
+  city: z.string().optional(),
+  email: z.string().email({ message: "Invalid email address" }).optional(),
+  phoneNumber: z.string().optional(),
+  profilePicture: z.string().optional(),
+  instagram: z.string().optional(),
+  website: z.string().optional(),
+  about: z.string().optional(),
+  yearsOfExperience: z.number().optional(),
+  services: z.union([z.string(), z.array(z.string())]).optional(),
+  tags: z.union([z.string(), z.array(z.string())]).optional(),
+  travelPreference: z.enum(["BASE", "REGION", "COUNTRY"]).optional(),
+  survey: z
+    .object({
+      id: z.string(),
+      answers: z.any(),
+    })
+    .optional(),
+});
+
 export const memberRouter = t.router({
   getMembers: t.procedure
     .input(
@@ -257,11 +281,60 @@ export const memberRouter = t.router({
   validateMemberUsername: authedProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
-      const member = await ctx.prisma.member.findUnique({
+      const member = await ctx.prisma.member.findMany({
         where: {
           username: input.username,
+          id: {
+            not: ctx.session.user.id,
+          },
         },
       });
-      return member === null;
+      return member.length === 0;
+    }),
+  updateMember: authedProcedure
+    .input(updateMemberSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.member.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          fullName: input.fullName,
+          username: input.username,
+          about: input.about,
+          location: {
+            connect: {
+              id: input.city,
+            },
+          },
+          email: input.email,
+          dateOfBirth: input.dateOfBirth,
+          phoneNumber: input.phoneNumber,
+          travelPreference: input.travelPreference,
+          yearsOfExperience: input.yearsOfExperience,
+          profilePicture: input.profilePicture,
+          links: {
+            instagram: input.instagram ?? "",
+            website: input.website ?? "",
+          },
+          isFeatured: false,
+          services: {
+            connect:
+              typeof input.services === "string"
+                ? { id: input.services }
+                : input.services?.map((service) => {
+                    return { id: service };
+                  }),
+          },
+          tags: {
+            connect:
+              typeof input.tags === "string"
+                ? { id: input.tags }
+                : input.tags?.map((tag) => {
+                    return { id: tag };
+                  }),
+          },
+        },
+      });
     }),
 });
