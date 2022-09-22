@@ -587,9 +587,7 @@ const EditMemberProfile: NextPage = () => {
               <h3 className="text-lg font-medium leading-6 text-gray-900">
                 About your practice
               </h3>
-              <p className="mt-1 text-sm text-gray-600">
-                Decide which communications you'd like to receive and how.
-              </p>
+              <p className="mt-1 text-sm text-gray-600"></p>
             </div>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
