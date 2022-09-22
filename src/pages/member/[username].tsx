@@ -32,7 +32,7 @@ const MemberProfile: NextPage = ({ member }: PageProps) => {
     return <div>Member not found</div>;
   }
   return (
-    <main className="py-10 bg-slate-50">
+    <main className="py-10 bg-slate-50 h-full">
       <div className="container mx-auto px-4 flex mb-6 ">
         <button
           onClick={() => router.back()}
@@ -47,7 +47,7 @@ const MemberProfile: NextPage = ({ member }: PageProps) => {
         <div className="flex items-center space-x-5">
           {member.profilePicture && (
             <div className="relative h-24 w-24 rounded-full overflow-hidden border-4 border-white shadow-md">
-              <Image src={member.profilePicture} alt="" fill />
+              <Image src={member.profilePicture} alt="" fill sizes="6rem" />
               <span
                 className="absolute inset-0 shadow-inner rounded-full"
                 aria-hidden="true"
