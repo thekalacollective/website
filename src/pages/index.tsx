@@ -64,7 +64,7 @@ function MemberDirectory({
     city: string | undefined;
   };
 
-  const { register, watch, setValue } = useForm<Filters>();
+  const { register, watch, setValue, getValues } = useForm<Filters>();
 
   const getLocationStates = trpc.proxy.constants.getLocationStates.useQuery();
   const getLocationCities = trpc.proxy.constants.getLocationCities.useQuery({
@@ -93,7 +93,7 @@ function MemberDirectory({
   );
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="border-t border-gray-200">
         {/* Mobile filter dialog */}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -140,6 +140,330 @@ function MemberDirectory({
 
                 {/* Filters */}
                 <form className="mt-4">
+                  <Disclosure
+                    as="div"
+                    className="border-t border-slate-200 pt-4 pb-4"
+                  >
+                    {({ open }) => (
+                      <fieldset>
+                        <legend className="w-full px-2">
+                          <Disclosure.Button className="w-full p-2 flex items-center justify-between text-slate-400 hover:text-slate-500">
+                            <span className="text-sm font-medium text-slate-900">
+                              Experience
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={clsx(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-5 w-5 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </legend>
+                        <Disclosure.Panel className="pt-4 pb-2 px-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label
+                                htmlFor="experience-min-mobile"
+                                className="block text-sm font-medium text-slate-600"
+                              >
+                                Minimum
+                              </label>
+                              <div className="mt-1">
+                                <input
+                                  type="number"
+                                  id="experience-min-mobile"
+                                  className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                                  onChange={(e) =>
+                                    setValue(
+                                      "experience.start",
+                                      e.target.valueAsNumber
+                                    )
+                                  }
+                                  value={watch("experience.start")}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label
+                                htmlFor="experience-max-mobile"
+                                className="block text-sm font-medium text-slate-600"
+                              >
+                                Maximum
+                              </label>
+                              <div className="mt-1">
+                                <input
+                                  type="number"
+                                  id="experience-max-mobile"
+                                  className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                                  onChange={(e) =>
+                                    setValue(
+                                      "experience.end",
+                                      e.target.valueAsNumber
+                                    )
+                                  }
+                                  value={watch("experience.end")}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </Disclosure.Panel>
+                      </fieldset>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-t border-slate-200 pt-4 pb-4"
+                  >
+                    {({ open }) => (
+                      <fieldset>
+                        <legend className="w-full px-2">
+                          <Disclosure.Button className="w-full p-2 flex items-center justify-between text-slate-400 hover:text-slate-500">
+                            <span className="text-sm font-medium text-slate-900">
+                              Location
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={clsx(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-5 w-5 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </legend>
+                        <Disclosure.Panel className="pt-4 pb-2 px-4 space-y-6">
+                          <div className="">
+                            <label
+                              htmlFor="state-mobile"
+                              className="block text-sm font-medium text-slate-500"
+                            >
+                              State
+                            </label>
+                            <div className="mt-1">
+                              <select
+                                id="state-mobile"
+                                className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full text-sm text-slate-500 border-slate-300 rounded-md capitalize"
+                                defaultValue={"ANY"}
+                                onChange={(e) => {
+                                  setValue("state", e.target.value);
+                                  setValue("city", "ANY");
+                                }}
+                                value={watch("state")}
+                              >
+                                <option value={"ANY"} className="capitalize">
+                                  Select
+                                </option>
+                                {getLocationStates.data &&
+                                  getLocationStates.data.length > 0 &&
+                                  getLocationStates.data.map((state) => (
+                                    <option
+                                      value={state.id}
+                                      key={state.id}
+                                      className="capitalize"
+                                    >
+                                      {state.name}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="city-mobile"
+                              className="block text-sm font-medium text-slate-500"
+                            >
+                              City
+                            </label>
+                            <div className="mt-1">
+                              <select
+                                id="city-mobile"
+                                autoComplete="city"
+                                className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full text-sm text-slate-500 border-slate-300 rounded-md capitalize"
+                                defaultValue={"ANY"}
+                                onChange={(e) =>
+                                  setValue("city", e.target.value)
+                                }
+                              >
+                                <option value={"ANY"} className="capitalize">
+                                  Select
+                                </option>
+                                {getLocationCities.data &&
+                                  getLocationCities.data.length > 0 &&
+                                  getLocationCities.data.map((city) => (
+                                    <option
+                                      value={city.id}
+                                      key={city.id}
+                                      className="capitalize"
+                                    >
+                                      {city.name}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                          </div>
+                        </Disclosure.Panel>
+                      </fieldset>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-t border-slate-200 pt-4 pb-4"
+                  >
+                    {({ open }) => (
+                      <fieldset>
+                        <legend className="w-full px-2">
+                          <Disclosure.Button className="w-full p-2 flex items-center justify-between text-slate-400 hover:text-slate-500">
+                            <span className="text-sm font-medium text-slate-900">
+                              Travel Availability
+                            </span>
+                            <span className="ml-6 h-7 flex items-center">
+                              <ChevronDownIcon
+                                className={clsx(
+                                  open ? "-rotate-180" : "rotate-0",
+                                  "h-5 w-5 transform"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </Disclosure.Button>
+                        </legend>
+                        <Disclosure.Panel className="pt-4 pb-2 px-4">
+                          <div className="space-y-6">
+                            <div className="flex items-center">
+                              <input
+                                id="travelPreference-BASE-mobile"
+                                type="checkbox"
+                                value="BASE"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").concat(
+                                            "BASE"
+                                          )
+                                        : ["BASE"]
+                                    );
+                                  } else {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").filter(
+                                            (item) => item !== "BASE"
+                                          )
+                                        : []
+                                    );
+                                  }
+                                }}
+                                checked={
+                                  getValues("travelPreference")
+                                    ? getValues("travelPreference").includes(
+                                        "BASE"
+                                      )
+                                    : false
+                                }
+                                className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"
+                              />
+                              <label
+                                htmlFor="travelPreference-BASE-mobile"
+                                className="ml-3 block text-sm text-slate-500"
+                              >
+                                Base location
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                id="travelPreference-REGION-mobile"
+                                type="checkbox"
+                                value="REGION"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").concat(
+                                            "REGION"
+                                          )
+                                        : ["REGION"]
+                                    );
+                                  } else {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").filter(
+                                            (item) => item !== "REGION"
+                                          )
+                                        : []
+                                    );
+                                  }
+                                }}
+                                checked={
+                                  getValues("travelPreference")
+                                    ? getValues("travelPreference").includes(
+                                        "REGION"
+                                      )
+                                    : false
+                                }
+                                className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"
+                              />
+                              <label
+                                htmlFor="travelPreference-REGION-mobile"
+                                className="ml-3 block text-sm text-slate-500"
+                              >
+                                City and region
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                id="travelPreference-COUNTRY-mobile"
+                                type="checkbox"
+                                value="COUNTRY"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").concat(
+                                            "COUNTRY"
+                                          )
+                                        : ["COUNTRY"]
+                                    );
+                                  } else {
+                                    setValue(
+                                      "travelPreference",
+                                      getValues("travelPreference")
+                                        ? getValues("travelPreference").filter(
+                                            (item) => item !== "COUNTRY"
+                                          )
+                                        : []
+                                    );
+                                  }
+                                }}
+                                checked={
+                                  getValues("travelPreference")
+                                    ? getValues("travelPreference").includes(
+                                        "COUNTRY"
+                                      )
+                                    : false
+                                }
+                                className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"
+                              />
+                              <label
+                                htmlFor="travelPreference-COUNTRY-mobile"
+                                className="ml-3 block text-sm  text-slate-500"
+                              >
+                                Anywhere in the country
+                              </label>
+                            </div>
+                          </div>
+                        </Disclosure.Panel>
+                      </fieldset>
+                    )}
+                  </Disclosure>
                   {filters.map((section) => (
                     <Disclosure
                       as="div"
@@ -176,7 +500,36 @@ function MemberDirectory({
                                       id={`${section.id}-${optionIdx}-mobile`}
                                       value={option.id}
                                       type="checkbox"
-                                      {...register(`${section.id}`)}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setValue(
+                                            `${section.id}`,
+                                            getValues(`${section.id}`)
+                                              ? getValues(
+                                                  `${section.id}`
+                                                ).concat(option.id)
+                                              : [option.id]
+                                          );
+                                        } else {
+                                          setValue(
+                                            `${section.id}`,
+                                            getValues(`${section.id}`)
+                                              ? getValues(
+                                                  `${section.id}`
+                                                ).filter(
+                                                  (item) => item !== option.id
+                                                )
+                                              : []
+                                          );
+                                        }
+                                      }}
+                                      checked={
+                                        getValues(`${section.id}`)
+                                          ? getValues(`${section.id}`).includes(
+                                              option.id
+                                            )
+                                          : false
+                                      }
                                       className="h-4 w-4 border-slate-300 rounded text-sky-600 focus:ring-sky-500"
                                     />
                                     <label
@@ -270,44 +623,46 @@ function MemberDirectory({
                       Experience
                     </legend>
                   </div>
-                  <div className="mt-4">
-                    <label
-                      htmlFor="experience-min"
-                      className="block text-sm font-medium text-slate-600"
-                    >
-                      Minimum
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        type="number"
-                        id="experience-min"
-                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
-                        {...register("experience.start", {
-                          min: 0,
-                          max: 100,
-                          valueAsNumber: true,
-                        })}
-                      />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="experience-min"
+                        className="block text-sm font-medium text-slate-600"
+                      >
+                        Minimum
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="number"
+                          id="experience-min"
+                          className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                          {...register("experience.start", {
+                            min: 0,
+                            max: 100,
+                            valueAsNumber: true,
+                          })}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <label
-                      htmlFor="experience-max"
-                      className="block text-sm font-medium text-slate-600"
-                    >
-                      Maximum
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        type="number"
-                        id="experience-max"
-                        className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
-                        {...register("experience.end", {
-                          min: 0,
-                          max: 100,
-                          valueAsNumber: true,
-                        })}
-                      />
+                    <div>
+                      <label
+                        htmlFor="experience-max"
+                        className="block text-sm font-medium text-slate-600"
+                      >
+                        Maximum
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="number"
+                          id="experience-max"
+                          className="shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border-slate-300 rounded-md"
+                          {...register("experience.end", {
+                            min: 0,
+                            max: 100,
+                            valueAsNumber: true,
+                          })}
+                        />
+                      </div>
                     </div>
                   </div>
                 </fieldset>
@@ -501,6 +856,7 @@ function MemberDirectory({
                                     src={member.profilePicture}
                                     alt=""
                                     fill
+                                    sizes="4rem"
                                   />
                                   <span
                                     className="absolute inset-0 shadow-inner rounded-full"
@@ -682,6 +1038,8 @@ const Home: NextPage = (props: {
                 src="https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                 alt=""
                 fill
+                sizes="448px"
+                priority
               />
             </div>
           </div>
@@ -693,16 +1051,14 @@ const Home: NextPage = (props: {
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
             Members Directory
           </h1>
-          <p className="mt-4 max-w-3xl mx-auto text-base text-slate-500">
-            Lorem ipsum dolor sit amet.
-          </p>
+          <p className="mt-4 max-w-3xl mx-auto text-base text-slate-500"></p>
         </div>
         {props.members && props.filters && (
           <MemberDirectory members={props.members} filters={props.filters} />
         )}
       </section>
 
-      <section className="relative py-8 md:py-16 bg-white">
+      <section className="relative py-8 md:py-16">
         <div
           className="hidden absolute top-0 inset-x-0 h-1/2 bg-amber-50 lg:block"
           aria-hidden="true"
@@ -721,6 +1077,7 @@ const Home: NextPage = (props: {
                     src="https://images.unsplash.com/photo-1507207611509-ec012433ff52?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80"
                     alt=""
                     fill
+                    sizes="688px"
                   />
                 </div>
               </div>
