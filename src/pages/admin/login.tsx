@@ -112,27 +112,3 @@ const AdminLogin: NextPage = () => {
 };
 
 export default AdminLogin;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-  if (session && session.user) {
-    if (session.user.role === "ADMIN") {
-      return {
-        props: {},
-        redirect: { destination: "/admin", permanent: false },
-      };
-    } else if (session.user.role === "MEMBER") {
-      return {
-        props: {},
-        redirect: { destination: "/member/login", permanent: false },
-      };
-    }
-  }
-  return {
-    props: {},
-  };
-};
